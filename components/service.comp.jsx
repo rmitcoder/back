@@ -17,9 +17,7 @@ class ServiceComponent extends React.Component{
         this.handleRedir = this.handleRedir.bind(this);
         this.handleChange = this.handleChange.bind(this);
     };
-    componentWillUnmount(){
-        console.log('services component is gone ^_^!!');
-    }
+
     componentDidMount(){
         let _self = this;
         let config = {

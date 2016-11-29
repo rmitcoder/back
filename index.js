@@ -27463,11 +27463,6 @@
 	    }
 	
 	    _createClass(ServiceComponent, [{
-	        key: 'componentWillUnmount',
-	        value: function componentWillUnmount() {
-	            console.log('services component is gone ^_^!!');
-	        }
-	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            var _self = this;
@@ -27549,7 +27544,11 @@
 	                    doc.docName
 	                );
 	            });
-	            var lanOpt = this.state.languages.map(function (lan, index) {
+	            var lanOpt = this.state.selectedVal === 'Family Register' ? _react2.default.createElement(
+	                'option',
+	                { value: 'Japanese' },
+	                'Japanese'
+	            ) : this.state.languages.map(function (lan, index) {
 	                return _react2.default.createElement(
 	                    'option',
 	                    { value: lan.language, key: index },

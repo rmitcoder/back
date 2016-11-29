@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c443c677-1b9a-410c-82aa-4da89d3851ed" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/components/cart.comp.jsx" afterPath="$PROJECT_DIR$/components/cart.comp.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/components/client.comp.jsx" afterPath="$PROJECT_DIR$/components/client.comp.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/components/priceList.comp.jsx" afterPath="$PROJECT_DIR$/components/priceList.comp.jsx" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/components/service.comp.jsx" afterPath="$PROJECT_DIR$/components/service.comp.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.js" afterPath="$PROJECT_DIR$/index.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.js.map" afterPath="$PROJECT_DIR$/index.js.map" />
     </list>
@@ -58,14 +53,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cart.comp.jsx" pinned="false" current-in-tab="true">
+      <file leaf-file-name="cart.comp.jsx" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/components/cart.comp.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="296">
-              <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+            <state relative-caret-position="150">
+              <caret line="10" column="18" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="service.comp.jsx" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/components/service.comp.jsx">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="112" column="110" selection-start-line="112" selection-start-column="110" selection-end-line="112" selection-end-column="110" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -101,10 +106,10 @@
         <option value="$PROJECT_DIR$/components/cartItem.comp.jsx" />
         <option value="$PROJECT_DIR$/components/product.comp.jsx" />
         <option value="$PROJECT_DIR$/components/client.comp.jsx" />
-        <option value="$PROJECT_DIR$/components/service.comp.jsx" />
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/components/priceList.comp.jsx" />
         <option value="$PROJECT_DIR$/components/cart.comp.jsx" />
+        <option value="$PROJECT_DIR$/components/service.comp.jsx" />
       </list>
     </option>
   </component>
@@ -279,12 +284,12 @@
       <workItem from="1479853507039" duration="14071000" />
       <workItem from="1479939351733" duration="18222000" />
       <workItem from="1480323759451" duration="746000" />
-      <workItem from="1480371219906" duration="14839000" />
+      <workItem from="1480371219906" duration="16178000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="121746000" />
+    <option name="totallyTimeSpent" value="123085000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="176" y="60" width="1342" height="705" extended-state="0" />
@@ -690,14 +695,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/components/service.comp.jsx">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="12" column="28" selection-start-line="12" selection-start-column="28" selection-end-line="12" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/components/priceList.comp.jsx">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
@@ -711,11 +708,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/components/cart.comp.jsx">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="296">
-          <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+        <state relative-caret-position="150">
+          <caret line="10" column="18" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/service.comp.jsx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="112" column="110" selection-start-line="112" selection-start-column="110" selection-end-line="112" selection-end-column="110" />
+          <folding />
         </state>
       </provider>
     </entry>
