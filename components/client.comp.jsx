@@ -1,5 +1,4 @@
 import React from 'react';
-import store from 'cache-store';
 class ClientComponent extends React.Component{
 
 

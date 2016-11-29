@@ -19,7 +19,6 @@ class ServiceComponent extends React.Component{
     };
     componentWillUnmount(){
         console.log('services component is gone ^_^!!');
-        console.log(this.state);
     }
     componentDidMount(){
         let _self = this;

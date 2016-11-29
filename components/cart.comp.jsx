@@ -19,7 +19,6 @@ class Cart extends React.Component{
         this.addMoreDoc = this.addMoreDoc.bind(this);
         this.edit = this.edit.bind(this);
         this.test = this.test.bind(this);
-
     }
 
     addMoreDoc(event){
@@ -30,9 +29,6 @@ class Cart extends React.Component{
         this.setState({
             showCart: true
         });
-
-
-        console.log(this.state.cart);
 
     }
     hideCart(){
@@ -47,31 +43,63 @@ class Cart extends React.Component{
         localStorage.clear();
     }
     delete(item){
-        const newState = this.state.cart.items;
-        if (newState.indexOf(item) > -1) {
-            newState.splice(newState.indexOf(item), 1);
-            this.setState({cart: {items: newState} })
-            localStorage.cart = JSON.stringify(this.state.cart.items);
+        let newState = this.state.cart;
+        const deletedItemPrice = item.subTotal;
+        if (newState.items.indexOf(item) > -1) {
+            newState.items.splice(newState.items.indexOf(item), 1);
+            newState.totalPrice -=  deletedItemPrice;
+            this.setState({
+                cart: newState
+            });
+            localStorage.cart = JSON.stringify(newState);
         }
+
 
     }
 
+    calculateTotal(items){
+        let sum = 0;
+        items.map((item) => {
+            sum += item.subTotal;
+        });
+        return sum;
+    }
+
+
+    updateItem(cart,attr,item,opt,val){
+        cart.map((carItem) =>{
+            if(carItem.id === item.id){
+                if(opt === '+='){
+                    item[attr] += val;
+                }else if(opt === '-='){
+                    item[attr] -= val;
+                }
+            }
+        });
+    }
     edit(item,event){
         const args = event.target.id.split(':');
         const elementId = args[0];
         const action = args[1];
-        let updatedCart = this.state.cart.items;
-        // let itemIndex = updatedCart.indexOf(item);
-        // let sumOfPrice = 0;
-        let currentQty = ReactDOM.findDOMNode(this.refs[elementId+':qty']);
+        let updatedCart = this.state.cart;
+        let QtyInput = ReactDOM.findDOMNode(this.refs[elementId+':qty']);
+        let copyQty = parseInt(QtyInput.value);
         if(action === 'add'){
-            currentQty.value = (parseInt(currentQty.value) + 1);
+            QtyInput.value = copyQty + 1;
+            this.updateItem(updatedCart.items,'subTotal',item,'+=',10);
+            updatedCart.totalPrice = this.calculateTotal(updatedCart.items);
         }else if(action === 'subs'){
-            if(parseInt(currentQty.value) <= 0){
+            if(copyQty <= 0){
                 return;
             }
-            currentQty.value = (parseInt(currentQty.value) - 1);
+            QtyInput.value = copyQty - 1;
+            this.updateItem(updatedCart.items,'subTotal',item,'-=',10);
+            updatedCart.totalPrice = this.calculateTotal(updatedCart.items);
         }
+        this.setState({
+            cart: updatedCart
+        })
+        localStorage.cart = JSON.stringify(this.state.cart);
 
     }
 
@@ -79,7 +107,7 @@ class Cart extends React.Component{
         this.setState({
             cart: nextProps.cartData,
         });
-        console.log((nextProps.cartData));
+
     }
     render(){
         const cartItemRow = this.state.cart.items.map((item) => {

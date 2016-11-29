@@ -8,17 +8,27 @@ import Cart from './cart.comp';
 class PriceList extends React.Component{
     constructor(){
         super();
-        this.state = {
-            buttonDisable: false,
-            currentCart: {
-                items: [],
-                totalPrice: 0
+        if(localStorage.cart){
+            this.state = {
+                buttonDisable: false,
+                currentCart: {
+                    items: JSON.parse(localStorage.cart).items,
+                    totalPrice: parseInt(JSON.parse(localStorage.cart).totalPrice)
+                }
+            }
+        }else{
+            this.state = {
+                buttonDisable: false,
+                currentCart: {
+                    items: [],
+                    totalPrice: 0
+                }
             }
         }
+
         this.handleAddToCart = this.handleAddToCart.bind(this);
         this.add = this.add.bind(this);
         this.substract = this.substract.bind(this);
-        this.addIndex  = this.addIndex.bind(this);
     }
     addIndex(arr){
         let newArr = []
@@ -38,23 +48,22 @@ class PriceList extends React.Component{
     handleAddToCart(event){
         const priceInfo = this.props.priceData;
         const selectedDoc = JSON.parse(localStorage.selectedDocs);
-
         let btnId = event.target.id;
-        let copyQty = ReactDOM.findDOMNode(this.refs[btnId]);//need to do some validation later
+        let copyQty = ReactDOM.findDOMNode(this.refs[btnId]).value;//need to do some validation later
         let existCart = [];
         let totalOfCart = this.state.currentCart.totalPrice;
         let item = {};
         let basicPrice = priceInfo[btnId];
         if(window.localStorage && localStorage.cart){
-            existCart = JSON.parse(localStorage.cart);
+            existCart = JSON.parse(localStorage.cart).items;
         }else{
             existCart = [];
         }
         item.doc = selectedDoc.document;
         item.dir = selectedDoc.direction;
         item.lang = selectedDoc.language;
-        item.extraCop = copyQty.value;
-        item.subTotal = basicPrice + 10 * item.extraCop;
+        item.extraCop = copyQty;
+        item.subTotal = basicPrice + 10 * item.extraCop; //Assume we charge $10 for each extra hard copy.
         existCart.push(item);
         existCart = this.addIndex(existCart);
         totalOfCart = this.calculateTotal(existCart);
@@ -66,13 +75,29 @@ class PriceList extends React.Component{
             buttonDisable:true
         })
 
-        localStorage.cart = JSON.stringify(existCart);
-        console.log(localStorage.cart);
+        localStorage.cart = JSON.stringify(this.state.currentCart);
+
         event.stopPropagation();
     }
+    shouldComponentUpdate(nextProps,nextState){
 
+        this.setState({
+            currentCart:nextState.currentCart
+        });
+        localStorage.cart = JSON.stringify(nextState.currentCart);
+        return true;
+
+    }
     componentDidMount(){
-        this.setState({currentCart: localStorage.cart? JSON.parse(localStorage.cart) : []});
+        console.log('did mount called');
+        if(localStorage.cart){
+            let storedCart = JSON.parse(localStorage.cart);
+            if(storedCart.items.length){
+                this.setState({currentCart:storedCart});
+            }
+
+        }
+
     }
     componentWillUnmount(){
         this.state.buttonDisable? false: null;
