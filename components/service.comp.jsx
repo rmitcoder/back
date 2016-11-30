@@ -48,6 +48,9 @@ class ServiceComponent extends React.Component{
         switch (selectId){
             case 'document':
                 cached.document = selectValue;
+                if(selectValue === 'Family Register'){
+                    cached.language = '';
+                }
                 break;
             case 'direction':
                 cached.direction = selectValue;
@@ -59,7 +62,7 @@ class ServiceComponent extends React.Component{
                 null;
                 break;
         }
-        //console.log(cached);
+        console.log(cached);
         this.setState({
             selectedVal: cached
         });
@@ -90,20 +93,33 @@ class ServiceComponent extends React.Component{
         event.stopPropagation();
 
     }
+    docOption(){
+        return(
+            this.state.documents.map((doc,index)=>{
+                return (
+                    <option value={doc.docName} key={index}>{doc.docName}</option>
+                );
+            })
+        );
+    }
+    lanOption(document){
+        if(document === 'Family Register'){
+            return(
+                <option value='Japanese' key={0}>Japanese</option>
+            );
+        }else{
+            return (
+                this.state.languages.map((lan,index) => {
+                    return(
+                        <option value={lan.language} key={index}>{lan.language}</option>
+                    );
+                })
+            );
+        }
 
-
+    }
     render(){
 
-        const docOpt = this.state.documents.map((doc,index)=>{
-            return (
-                <option value={doc.docName} key={index}>{doc.docName}</option>
-            );
-        });
-        const lanOpt = this.state.languages.map((lan,index) => {
-            return (
-                <option value={lan.language} key={index}>{lan.language}</option>
-            );
-        });
         return(
             <div>
                 <div className=" jumbotron text-center">
@@ -112,7 +128,7 @@ class ServiceComponent extends React.Component{
                         <div className="form-group " >
                             <select name="document" id="document" className="form-control" onChange={this.handleChange} defaultValue="selected" >
                                 <option value="selected">Select a Document</option>
-                                {docOpt}
+                                {this.docOption()}
                             </select>
                             <select name="direction" id="direction" className="form-control" onChange={this.handleChange} defaultValue="selected" >
                                 <option value="selected">Select Direction </option>
@@ -121,7 +137,7 @@ class ServiceComponent extends React.Component{
                             </select>
                             <select name="language" id="language" className="form-control" onChange={this.handleChange} defaultValue="selected">
                                 <option value="selected">Select a Language</option>
-                                {lanOpt}
+                                {this.lanOption(this.state.selectedVal.document)}
                             </select>
                             <button className="btn btn-primary" onClick={this.handleRedir}>Quote Now</button>
                         </div>

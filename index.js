@@ -27492,6 +27492,10 @@
 	            switch (selectId) {
 	                case 'document':
 	                    cached.document = selectValue;
+	                    if (selectValue === 'Family Register') {
+	                        cached.language = '';
+	                    }
+	
 	                    break;
 	                case 'direction':
 	                    cached.direction = selectValue;
@@ -27503,7 +27507,7 @@
 	                    null;
 	                    break;
 	            }
-	            //console.log(cached);
+	            console.log(cached);
 	            this.setState({
 	                selectedVal: cached
 	            });
@@ -27534,27 +27538,39 @@
 	            event.stopPropagation();
 	        }
 	    }, {
-	        key: 'render',
-	        value: function render() {
-	
-	            var docOpt = this.state.documents.map(function (doc, index) {
+	        key: 'docOption',
+	        value: function docOption() {
+	            return this.state.documents.map(function (doc, index) {
 	                return _react2.default.createElement(
 	                    'option',
 	                    { value: doc.docName, key: index },
 	                    doc.docName
 	                );
 	            });
-	            var lanOpt = this.state.selectedVal === 'Family Register' ? _react2.default.createElement(
-	                'option',
-	                { value: 'Japanese' },
-	                'Japanese'
-	            ) : this.state.languages.map(function (lan, index) {
+	        }
+	    }, {
+	        key: 'lanOption',
+	        value: function lanOption(document) {
+	            if (document === 'Family Register') {
 	                return _react2.default.createElement(
 	                    'option',
-	                    { value: lan.language, key: index },
-	                    lan.language
+	                    { value: 'Japanese', key: 0 },
+	                    'Japanese'
 	                );
-	            });
+	            } else {
+	                return this.state.languages.map(function (lan, index) {
+	                    return _react2.default.createElement(
+	                        'option',
+	                        { value: lan.language, key: index },
+	                        lan.language
+	                    );
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	
 	            return _react2.default.createElement(
 	                'div',
 	                null,
@@ -27580,7 +27596,7 @@
 	                                    { value: 'selected' },
 	                                    'Select a Document'
 	                                ),
-	                                docOpt
+	                                this.docOption()
 	                            ),
 	                            _react2.default.createElement(
 	                                'select',
@@ -27609,7 +27625,7 @@
 	                                    { value: 'selected' },
 	                                    'Select a Language'
 	                                ),
-	                                lanOpt
+	                                this.lanOption(this.state.selectedVal.document)
 	                            ),
 	                            _react2.default.createElement(
 	                                'button',
