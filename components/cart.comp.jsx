@@ -6,19 +6,19 @@ import { Panel,Button,ListGroup,ListGroupItem,Badge ,Modal,Table,InputGroup} fro
 
 class Cart extends React.Component{
     constructor(props){
-        super(props)
+        super(props);
         this.state = {
             cart:{
                 items: props.cartData.items,
                 totalPrice: props.cartData.totalPrice
             },
             showCart: false
-        }
+        };
         this.show = this.show.bind(this);
         this.hideCart  = this.hideCart.bind(this);
         this.addMoreDoc = this.addMoreDoc.bind(this);
-        this.edit = this.edit.bind(this);
-        this.test = this.test.bind(this);
+        this.handleCheckout = this.handleCheckout.bind(this);
+
     }
 
     addMoreDoc(event){
@@ -37,12 +37,29 @@ class Cart extends React.Component{
         })
 
     }
-    test(e){
-        e.stopPropagation();
-        hashHistory.push('/');
-        localStorage.clear();
+
+    handleCheckout(){
+        // if(confirm('This button is currently in test and all data will be erased and back to Homepage, do you' +
+        //         'want to continue?')){
+        //     let cart = JSON.parse(localStorage.cart);
+        //     this.printOrder(cart);
+        //     hashHistory.push('/');
+        //     localStorage.clear();
+        // }
+        hashHistory.push('/upload');
     }
-    delete(item){
+    printOrder(cart){
+        let total = parseInt(cart.totalPrice);
+        let itemNum = cart.items.length;
+        let items = cart.items;
+        items.map((item,index) => {
+            console.log('your order:'+itemNum+' services this is '+(parseInt(index)+1)+' document' +
+                ', document name is:'+item.doc+' translate '+item.dir+' '+ item.lang+' the ' +
+                'qty of hard copy is:'+item.extraCop);
+        });
+        console.log('total price is '+total);
+    }
+    remove(item){
         let newState = this.state.cart;
         const deletedItemPrice = item.subTotal;
         if (newState.items.indexOf(item) > -1) {
@@ -98,7 +115,7 @@ class Cart extends React.Component{
         }
         this.setState({
             cart: updatedCart
-        })
+        });
         localStorage.cart = JSON.stringify(this.state.cart);
 
     }
@@ -129,7 +146,7 @@ class Cart extends React.Component{
                     </InputGroup>
                     </td>
                     <td>${item.subTotal}</td>
-                    <td><Button bsStyle="danger" onClick={this.delete.bind(this,item)} id={'btn-'+item.id}>remove</Button></td>
+                    <td><Button bsStyle="danger" onClick={this.remove.bind(this,item)} id={'btn-'+item.id}>remove</Button></td>
                 </tr>
             )
         });
@@ -139,7 +156,7 @@ class Cart extends React.Component{
                 <Panel style={this.props.panelStyle.tab} header="Shopping Cart" bsStyle="info" >
                         <ListGroup fill>
                             <ListGroupItem><Button bsStyle="success" onClick={this.show} >ViewCart <Badge>{this.state.cart.items.length}</Badge></Button></ListGroupItem>
-                            <ListGroupItem><Button onClick={this.test} >CheckOut</Button></ListGroupItem>
+                            <ListGroupItem><Button onClick={this.handleCheckout} >CheckOut</Button></ListGroupItem>
                         </ListGroup>
                 </Panel>
 

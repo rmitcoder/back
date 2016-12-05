@@ -62,7 +62,6 @@ class ServiceComponent extends React.Component{
                 null;
                 break;
         }
-        console.log(cached);
         this.setState({
             selectedVal: cached
         });
@@ -105,7 +104,7 @@ class ServiceComponent extends React.Component{
     lanOption(document){
         if(document === 'Family Register'){
             return(
-                <option value='Japanese' key={0}>Japanese</option>
+                <option value='Japanese' >Japanese</option>
             );
         }else{
             return (

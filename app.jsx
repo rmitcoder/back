@@ -8,6 +8,7 @@ import ContactComponent from './components/contact.comp.jsx';
 import ServiceComponent from './components/service.comp.jsx';
 import GetPrice from './components/product.comp';
 import DLComponent from './components/driveLicence.comp';
+import DocUpload from './components/upload.comp';
 
 ReactDOM.render(
     <Router history={hashHistory}>
@@ -19,6 +20,7 @@ ReactDOM.render(
             <Route path="/services/:doc" component={GetPrice} />
             <Route path="/client" component={ClientComponent}/>
             <Route path="/contact" component={ContactComponent}/>
+            <Route path="/upload" component={DocUpload}/>
         </Route>
     </Router>,
     document.getElementById('app')

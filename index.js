@@ -87,6 +87,10 @@
 	
 	var _driveLicence2 = _interopRequireDefault(_driveLicence);
 	
+	var _upload = __webpack_require__(/*! ./components/upload.comp */ 518);
+	
+	var _upload2 = _interopRequireDefault(_upload);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	_reactDom2.default.render(_react2.default.createElement(
@@ -103,7 +107,8 @@
 	        ),
 	        _react2.default.createElement(_reactRouter.Route, { path: '/services/:doc', component: _product2.default }),
 	        _react2.default.createElement(_reactRouter.Route, { path: '/client', component: _clientComp2.default }),
-	        _react2.default.createElement(_reactRouter.Route, { path: '/contact', component: _contactComp2.default })
+	        _react2.default.createElement(_reactRouter.Route, { path: '/contact', component: _contactComp2.default }),
+	        _react2.default.createElement(_reactRouter.Route, { path: '/upload', component: _upload2.default })
 	    )
 	), document.getElementById('app'));
 
@@ -27495,7 +27500,6 @@
 	                    if (selectValue === 'Family Register') {
 	                        cached.language = '';
 	                    }
-	
 	                    break;
 	                case 'direction':
 	                    cached.direction = selectValue;
@@ -27507,7 +27511,6 @@
 	                    null;
 	                    break;
 	            }
-	            console.log(cached);
 	            this.setState({
 	                selectedVal: cached
 	            });
@@ -27554,7 +27557,7 @@
 	            if (document === 'Family Register') {
 	                return _react2.default.createElement(
 	                    'option',
-	                    { value: 'Japanese', key: 0 },
+	                    { value: 'Japanese' },
 	                    'Japanese'
 	                );
 	            } else {
@@ -49240,8 +49243,8 @@
 	        _this.show = _this.show.bind(_this);
 	        _this.hideCart = _this.hideCart.bind(_this);
 	        _this.addMoreDoc = _this.addMoreDoc.bind(_this);
-	        _this.edit = _this.edit.bind(_this);
-	        _this.test = _this.test.bind(_this);
+	        _this.handleCheckout = _this.handleCheckout.bind(_this);
+	
 	        return _this;
 	    }
 	
@@ -49266,15 +49269,31 @@
 	            });
 	        }
 	    }, {
-	        key: 'test',
-	        value: function test(e) {
-	            e.stopPropagation();
-	            _reactRouter.hashHistory.push('/');
-	            localStorage.clear();
+	        key: 'handleCheckout',
+	        value: function handleCheckout() {
+	            // if(confirm('This button is currently in test and all data will be erased and back to Homepage, do you' +
+	            //         'want to continue?')){
+	            //     let cart = JSON.parse(localStorage.cart);
+	            //     this.printOrder(cart);
+	            //     hashHistory.push('/');
+	            //     localStorage.clear();
+	            // }
+	            _reactRouter.hashHistory.push('/upload');
 	        }
 	    }, {
-	        key: 'delete',
-	        value: function _delete(item) {
+	        key: 'printOrder',
+	        value: function printOrder(cart) {
+	            var total = parseInt(cart.totalPrice);
+	            var itemNum = cart.items.length;
+	            var items = cart.items;
+	            items.map(function (item, index) {
+	                console.log('your order:' + itemNum + ' services this is ' + (parseInt(index) + 1) + ' document' + ', document name is:' + item.doc + ' translate ' + item.dir + ' ' + item.lang + ' the ' + 'qty of hard copy is:' + item.extraCop);
+	            });
+	            console.log('total price is ' + total);
+	        }
+	    }, {
+	        key: 'remove',
+	        value: function remove(item) {
 	            var newState = this.state.cart;
 	            var deletedItemPrice = item.subTotal;
 	            if (newState.items.indexOf(item) > -1) {
@@ -49408,7 +49427,7 @@
 	                        null,
 	                        _react2.default.createElement(
 	                            _reactBootstrap.Button,
-	                            { bsStyle: 'danger', onClick: _this2.delete.bind(_this2, item), id: 'btn-' + item.id },
+	                            { bsStyle: 'danger', onClick: _this2.remove.bind(_this2, item), id: 'btn-' + item.id },
 	                            'remove'
 	                        )
 	                    )
@@ -49442,7 +49461,7 @@
 	                            null,
 	                            _react2.default.createElement(
 	                                _reactBootstrap.Button,
-	                                { onClick: this.test },
+	                                { onClick: this.handleCheckout },
 	                                'CheckOut'
 	                            )
 	                        )
@@ -49843,6 +49862,174 @@
 	}(_react2.default.Component);
 	
 	exports.default = MyAlert;
+
+/***/ },
+/* 518 */
+/*!************************************!*\
+  !*** ./components/upload.comp.jsx ***!
+  \************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _axios = __webpack_require__(/*! axios */ 238);
+	
+	var _axios2 = _interopRequireDefault(_axios);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 32);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var DocUpload = function (_React$Component) {
+	    _inherits(DocUpload, _React$Component);
+	
+	    function DocUpload(props) {
+	        _classCallCheck(this, DocUpload);
+	
+	        var _this = _possibleConstructorReturn(this, (DocUpload.__proto__ || Object.getPrototypeOf(DocUpload)).call(this, props));
+	
+	        _this.state = {
+	            cart: {
+	                items: [],
+	                totalPrice: 0
+	            },
+	            uploadFiles: []
+	        };
+	        _this.handleFileChange = _this.handleFileChange.bind(_this);
+	        _this.handleSubmit = _this.handleSubmit.bind(_this);
+	        return _this;
+	    }
+	
+	    _createClass(DocUpload, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            if (localStorage.cart) {
+	                this.setState({
+	                    cart: {
+	                        items: JSON.parse(localStorage.cart).items,
+	                        totalPrice: parseInt(JSON.parse(localStorage.cart).totalPrice)
+	                    }
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'handleFileChange',
+	        value: function handleFileChange(item, event) {
+	            var fileName = item.doc;
+	            var files = [];
+	            files.push(event.target.files);
+	            this.setState({
+	                uploadFiles: files
+	            });
+	
+	            //
+	            //
+	            console.log("doc name is %s", fileName);
+	        }
+	    }, {
+	        key: 'handleSubmit',
+	        value: function handleSubmit(event) {
+	            var config = {
+	                headers: {
+	                    "Content-Type": "multipart/form-data"
+	                }
+	            };
+	            console.log(this.state.uploadFiles);
+	            event.preventDefault();
+	        }
+	    }, {
+	        key: 'uploadInput',
+	        value: function uploadInput() {
+	            var _this2 = this;
+	
+	            console.log(this.state);
+	            return this.state.cart.items.map(function (item, index) {
+	                return _react2.default.createElement(
+	                    'div',
+	                    { className: 'form-group', key: index },
+	                    _react2.default.createElement(
+	                        'h4',
+	                        null,
+	                        item.doc
+	                    ),
+	                    _react2.default.createElement('input', { className: 'file-input btn btn-info form-control', type: 'file', id: "item-" + index, name: 'docs[]',
+	                        multiple: true, onChange: function onChange(event) {
+	                            return _this2.handleFileChange(item, event);
+	                        } })
+	                );
+	            });
+	        }
+	        // method="POST" action="http://localhost/api/api/post/upload" encType="multipart/form-data"
+	
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                { className: 'jumbotron text-center' },
+	                _react2.default.createElement(
+	                    'h1',
+	                    null,
+	                    'Upload your documents'
+	                ),
+	                _react2.default.createElement(
+	                    'form',
+	                    { onSubmit: this.handleSubmit, encType: 'multipart/form-data' },
+	                    this.uploadInput(),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'form-group' },
+	                        _react2.default.createElement(
+	                            'h5',
+	                            null,
+	                            'Please enter your full name'
+	                        ),
+	                        _react2.default.createElement('input', { type: 'text', ref: 'full-name', className: 'form-control' }),
+	                        _react2.default.createElement(
+	                            'h5',
+	                            null,
+	                            'Please enter your post address'
+	                        ),
+	                        _react2.default.createElement('input', { type: 'text', ref: 'post-address', className: 'form-control' }),
+	                        _react2.default.createElement(
+	                            'h5',
+	                            null,
+	                            'Other comment for the services'
+	                        ),
+	                        _react2.default.createElement('textarea', { className: 'form-control', ref: 'comment', rows: '2', placeholder: 'Comments for these documents .e.g where are you going to use driver\'s licence' })
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'form-group' },
+	                        _react2.default.createElement('input', { type: 'submit', className: 'btn btn-success form-control', value: 'Upload' })
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return DocUpload;
+	}(_react2.default.Component);
+	
+	exports.default = DocUpload;
 
 /***/ }
 /******/ ]);
