@@ -29371,6 +29371,7 @@
 	        _this.handleAddToCart = _this.handleAddToCart.bind(_this);
 	        _this.add = _this.add.bind(_this);
 	        _this.substract = _this.substract.bind(_this);
+	        _this.edit = _this.edit.bind(_this);
 	        return _this;
 	    }
 	
@@ -29442,7 +29443,7 @@
 	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-	            console.log('did mount called');
+	            console.log('mount Price component');
 	            if (localStorage.cart) {
 	                var storedCart = JSON.parse(localStorage.cart);
 	                if (storedCart.items.length) {
@@ -29480,6 +29481,26 @@
 	            var num = parseInt(inputVal.value);
 	            num += 1;
 	            inputVal.value = num; //to be optimized;
+	        }
+	    }, {
+	        key: 'edit',
+	        value: function edit(event) {
+	            event.stopPropagation();
+	            var elementId = event.target.id;
+	            var args = elementId.split(":");
+	            var priceType = args[0];
+	            var clickAction = args[1];
+	            var extraCopyInput = _reactDom2.default.findDOMNode(this.refs[priceType]);
+	            var hardCopyQty = parseInt(extraCopyInput.value); // because the value is string so need to be parsed
+	            if (clickAction === 'add') {
+	                hardCopyQty += 1;
+	            } else if (clickAction === 'sub') {
+	                if (hardCopyQty <= 0) {
+	                    return;
+	                }
+	                hardCopyQty -= 1;
+	            }
+	            extraCopyInput.value = hardCopyQty;
 	        }
 	    }, {
 	        key: 'substract',
@@ -29561,17 +29582,17 @@
 	                                        null,
 	                                        _react2.default.createElement(
 	                                            _reactBootstrap.Button,
-	                                            { bsStyle: 'info', onClick: this.add, id: 'stdAdd' },
+	                                            { bsStyle: 'info', onClick: this.edit, id: 'std:add' },
 	                                            '+'
 	                                        )
 	                                    ),
-	                                    _react2.default.createElement('input', { className: 'form-control', type: 'text', ref: 'std', defaultValue: '0' }),
+	                                    _react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'std', defaultValue: '0' }),
 	                                    _react2.default.createElement(
 	                                        _reactBootstrap.InputGroup.Button,
 	                                        null,
 	                                        _react2.default.createElement(
 	                                            _reactBootstrap.Button,
-	                                            { bsStyle: 'info', onClick: this.substract, id: 'stdSub' },
+	                                            { bsStyle: 'info', onClick: this.edit, id: 'std:sub' },
 	                                            '-'
 	                                        )
 	                                    )
@@ -29627,7 +29648,7 @@
 	                                        null,
 	                                        _react2.default.createElement(
 	                                            _reactBootstrap.Button,
-	                                            { bsStyle: 'info', onClick: this.add, id: 'expAdd' },
+	                                            { bsStyle: 'info', onClick: this.edit, id: 'exp:add' },
 	                                            '+'
 	                                        )
 	                                    ),
@@ -29637,7 +29658,7 @@
 	                                        null,
 	                                        _react2.default.createElement(
 	                                            _reactBootstrap.Button,
-	                                            { bsStyle: 'info', onClick: this.substract, id: 'expSub' },
+	                                            { bsStyle: 'info', onClick: this.edit, id: 'exp:sub' },
 	                                            '-'
 	                                        )
 	                                    )
@@ -29693,7 +29714,7 @@
 	                                        null,
 	                                        _react2.default.createElement(
 	                                            _reactBootstrap.Button,
-	                                            { bsStyle: 'info', onClick: this.add, id: 'urgAdd' },
+	                                            { bsStyle: 'info', onClick: this.edit, id: 'urg:add' },
 	                                            '+'
 	                                        )
 	                                    ),
@@ -29703,7 +29724,7 @@
 	                                        null,
 	                                        _react2.default.createElement(
 	                                            _reactBootstrap.Button,
-	                                            { bsStyle: 'info', onClick: this.substract, id: 'urgSub' },
+	                                            { bsStyle: 'info', onClick: this.edit, id: 'urg:sub' },
 	                                            '-'
 	                                        )
 	                                    )
@@ -49944,7 +49965,6 @@
 	        key: 'handleSubmit',
 	        value: function handleSubmit(event) {
 	            var formData = _reactDom2.default.findDOMNode(this.refs.myForm);
-	            //let upData = new FormData(formData);
 	            var upData = new FormData();
 	            var updataArr = this.state.uploadFiles;
 	            updataArr.map(function (fileObj) {
@@ -49953,20 +49973,15 @@
 	                    upData.append('files[]', fileObj.fileList.item(i), fileObj.name + '-' + i + '.' + extension);
 	                }
 	            });
+	            /// upData.append('fullName',formData['full-name'].value);
+	
+	            console.log(formData['full-name'].value);
 	
 	            _axios2.default.post('http://localhost/api/api/post/upload', upData).then(function (response) {
 	                console.log(response.data);
 	            }).catch(function (err) {
 	                console.log(err.message);
 	            });
-	
-	            // this.state.cart.items.map((item,index) => {
-	            //     console.log(upData.getAll(item.doc+'-docs[]'));
-	            //     upData.set(item.doc+'-docs[]',upData.getAll(item.doc+'-docs[]'),)
-	            // });
-	
-	            //console.log(upData.getAll('doc[]'));
-	
 	
 	            event.preventDefault();
 	        }
@@ -49985,7 +50000,7 @@
 	                        item.doc
 	                    ),
 	                    _react2.default.createElement('input', { className: 'file-input btn btn-info form-control', type: 'file', id: "item-" + index,
-	                        name: 'doc[]', multiple: true, onChange: function onChange(event) {
+	                        multiple: true, onChange: function onChange(event) {
 	                            return _this2.handleFileChange(item, event);
 	                        } })
 	                );

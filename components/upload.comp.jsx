@@ -51,10 +51,10 @@ class DocUpload extends React.Component {
                let extension = fileObj.fileList.item(i).name.split('.')[1];
                upData.append('files[]',fileObj.fileList.item(i),fileObj.name+'-'+i+'.'+extension);
            }
-
-
        });
+      /// upData.append('fullName',formData['full-name'].value);
 
+       console.log(formData['full-name'].value);
 
     axios.post('http://localhost/api/api/post/upload',upData)
         .then((response) => {
@@ -63,14 +63,6 @@ class DocUpload extends React.Component {
         .catch((err) => {
             console.log(err.message)
         });
-
-        // this.state.cart.items.map((item,index) => {
-        //     console.log(upData.getAll(item.doc+'-docs[]'));
-        //     upData.set(item.doc+'-docs[]',upData.getAll(item.doc+'-docs[]'),)
-        // });
-
-       //console.log(upData.getAll('doc[]'));
-
 
 
        event.preventDefault();
@@ -84,7 +76,7 @@ class DocUpload extends React.Component {
                         <div className="form-group" key={index}>
                             <h4>{item.doc}</h4>
                             <input className="file-input btn btn-info form-control" type="file" id={"item-"+index}
-                                 name='doc[]'  multiple onChange={(event) =>
+                                   multiple onChange={(event) =>
                                 this.handleFileChange(item, event)}/>
                         </div>
                 )

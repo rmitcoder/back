@@ -27,8 +27,9 @@ class PriceList extends React.Component{
         }
 
         this.handleAddToCart = this.handleAddToCart.bind(this);
-        this.add = this.add.bind(this);
-        this.substract = this.substract.bind(this);
+        // this.add = this.add.bind(this);
+        // this.substract = this.substract.bind(this); these two functions combined into edit()
+        this.edit = this.edit.bind(this);
     }
     addIndex(arr){
         let newArr = []
@@ -89,72 +90,89 @@ class PriceList extends React.Component{
 
     }
     componentDidMount(){
-        console.log('did mount called');
+        console.log('mount Price component');
         if(localStorage.cart){
             let storedCart = JSON.parse(localStorage.cart);
             if(storedCart.items.length){
                 this.setState({currentCart:storedCart});
             }
-
         }
 
     }
     componentWillUnmount(){
         this.state.buttonDisable? false: null;
     }
-    add(event){
+    // add(event){
+    //     event.stopPropagation();
+    //     let btnId = event.target.id;
+    //     let buttonId = '';
+    //     switch (btnId){
+    //         case 'stdAdd':
+    //             buttonId = 'std';
+    //             break;
+    //         case 'expAdd':
+    //             buttonId = 'exp';
+    //             break;
+    //         case 'urgAdd':
+    //             buttonId = 'urg';
+    //             break;
+    //         default:
+    //             null;
+    //             break;
+    //     }
+    //     let inputVal = ReactDOM.findDOMNode(this.refs[buttonId]);
+    //
+    //     let num = parseInt(inputVal.value);
+    //     num +=1;
+    //     inputVal.value = num;//to be optimized;
+    //
+    // }
+    edit(event){
         event.stopPropagation();
-        let btnId = event.target.id;
-        let buttonId = '';
-        switch (btnId){
-            case 'stdAdd':
-                buttonId = 'std';
-                break;
-            case 'expAdd':
-                buttonId = 'exp';
-                break;
-            case 'urgAdd':
-                buttonId = 'urg';
-                break;
-            default:
-                null;
-                break;
+        let elementId = event.target.id;
+        let args = elementId.split(":");
+        let priceType = args[0];
+        let clickAction = args[1]
+        let extraCopyInput = ReactDOM.findDOMNode(this.refs[priceType]);
+        let hardCopyQty = parseInt(extraCopyInput.value); // because the value is string so need to be parsed
+        if(clickAction === 'add'){
+            hardCopyQty += 1;
+        }else if(clickAction === 'sub'){
+            if(hardCopyQty <= 0){
+                return;
+            }
+            hardCopyQty -= 1;
         }
-        let inputVal = ReactDOM.findDOMNode(this.refs[buttonId]);
-
-        let num = parseInt(inputVal.value);
-        num +=1;
-        inputVal.value = num;//to be optimized;
+        extraCopyInput.value = hardCopyQty;
 
     }
-
-    substract(event){
-        event.stopPropagation();
-        let btnId = event.target.id;
-
-        let buttonId = '';
-        switch (btnId){
-            case 'stdSub':
-                buttonId = 'std';
-                break;
-            case 'expSub':
-                buttonId = 'exp';
-                break;
-            case 'urgSub':
-                buttonId = 'urg';
-                break;
-            default:
-                null;
-                break;
-        }
-        let inputVal = ReactDOM.findDOMNode(this.refs[buttonId]);
-        let num = parseInt(inputVal.value);
-        num -=1;
-        if(num < 0){
-            return;
-        }
-        inputVal.value = num;//to be optimized;
-    }
+    // substract(event){
+    //     event.stopPropagation();
+    //     let btnId = event.target.id;
+    //
+    //     let buttonId = '';
+    //     switch (btnId){
+    //         case 'stdSub':
+    //             buttonId = 'std';
+    //             break;
+    //         case 'expSub':
+    //             buttonId = 'exp';
+    //             break;
+    //         case 'urgSub':
+    //             buttonId = 'urg';
+    //             break;
+    //         default:
+    //             null;
+    //             break;
+    //     }
+    //     let inputVal = ReactDOM.findDOMNode(this.refs[buttonId]);
+    //     let num = parseInt(inputVal.value);
+    //     num -=1;
+    //     if(num < 0){
+    //         return;
+    //     }
+    //     inputVal.value = num;//to be optimized;
+    // }
     render() {
         let StyleObj = {
             tab:{margin: '20px'},
@@ -172,11 +190,13 @@ class PriceList extends React.Component{
                                 Extra Copy
                                 <InputGroup>
                                     <InputGroup.Button>
-                                        <Button bsStyle="info" onClick={this.add} id="stdAdd">+</Button>
+                                        <Button bsStyle="info" onClick={this.edit} id="std:add">+</Button>
+                                        {/*<Button bsStyle="info" onClick={this.add} id="stdAdd">+</Button>*/}
                                     </InputGroup.Button>
-                                    <input className="form-control" type="text" ref="std" defaultValue="0"/>
+                                    <input type="text" className="form-control" ref="std" defaultValue="0"/>
                                     <InputGroup.Button>
-                                        <Button bsStyle="info" onClick={this.substract} id="stdSub">-</Button>
+                                        <Button bsStyle="info" onClick={this.edit} id="std:sub">-</Button>
+                                        {/*<Button bsStyle="info" onClick={this.substract} id="stdSub">-</Button>*/}
                                     </InputGroup.Button>
                                 </InputGroup>
 
@@ -193,11 +213,13 @@ class PriceList extends React.Component{
                                 Extra Copy
                                 <InputGroup>
                                     <InputGroup.Button>
-                                        <Button bsStyle="info" onClick={this.add} id="expAdd">+</Button>
+                                        {/*<Button bsStyle="info" onClick={this.add} id="expAdd">+</Button>*/}
+                                        <Button bsStyle="info" onClick={this.edit} id="exp:add">+</Button>
                                     </InputGroup.Button>
                                     <input className="form-control" type="text" ref="exp" defaultValue="0"/>
                                     <InputGroup.Button>
-                                        <Button bsStyle="info" onClick={this.substract} id="expSub">-</Button>
+                                        {/*<Button bsStyle="info" onClick={this.substract} id="expSub">-</Button>*/}
+                                        <Button bsStyle="info" onClick={this.edit} id="exp:sub">-</Button>
                                     </InputGroup.Button>
                                 </InputGroup>
                             </ListGroupItem>
@@ -213,11 +235,13 @@ class PriceList extends React.Component{
                                 Extra Copy
                                 <InputGroup>
                                     <InputGroup.Button>
-                                        <Button bsStyle="info"  onClick={this.add} id="urgAdd">+</Button>
+                                        {/*<Button bsStyle="info"  onClick={this.add} id="urgAdd">+</Button>*/}
+                                        <Button bsStyle="info" onClick={this.edit} id="urg:add">+</Button>
                                     </InputGroup.Button>
                                     <input className="form-control" type="text" ref="urg" defaultValue="0"/>
                                     <InputGroup.Button>
-                                        <Button bsStyle="info"  onClick={this.substract} id="urgSub">-</Button>
+                                        {/*<Button bsStyle="info"  onClick={this.substract} id="urgSub">-</Button>*/}
+                                        <Button bsStyle="info" onClick={this.edit} id="urg:sub">-</Button>
                                     </InputGroup.Button>
                                 </InputGroup>
                             </ListGroupItem>
