@@ -51,7 +51,6 @@ class DLComponent extends React.Component{
         }else{
             this.setState({alert:false,buttonDisable:false});
         }
-
         event.stopPropagation();
     };
     handleProceed(){

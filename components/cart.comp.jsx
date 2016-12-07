@@ -152,7 +152,7 @@ class Cart extends React.Component{
         });
         return(
 
-            <div >
+            <div  >
                 <Panel style={this.props.panelStyle.tab} header="Shopping Cart" bsStyle="info" >
                         <ListGroup fill>
                             <ListGroupItem><Button bsStyle="success" onClick={this.show} >ViewCart <Badge>{this.state.cart.items.length}</Badge></Button></ListGroupItem>

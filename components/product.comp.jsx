@@ -8,8 +8,8 @@ class GetPrice extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            currentPrice: {},
-            cart: []
+            currentPrice: {}
+            //cart: []
         }
     }
 
@@ -30,10 +30,7 @@ class GetPrice extends React.Component{
             });
 
     }
-    componentWillUnmount(){
-        console.log('component product is unmounted.....');
 
-    }
 
 
     render() {

@@ -29260,8 +29260,8 @@
 	        var _this = _possibleConstructorReturn(this, (GetPrice.__proto__ || Object.getPrototypeOf(GetPrice)).call(this, props));
 	
 	        _this.state = {
-	            currentPrice: {},
-	            cart: []
+	            currentPrice: {}
+	            //cart: []
 	        };
 	        return _this;
 	    }
@@ -29282,11 +29282,6 @@
 	                    currentPrice: response.data
 	                });
 	            });
-	        }
-	    }, {
-	        key: 'componentWillUnmount',
-	        value: function componentWillUnmount() {
-	            console.log('component product is unmounted.....');
 	        }
 	    }, {
 	        key: 'render',
@@ -29401,7 +29396,7 @@
 	    }, {
 	        key: 'handleAddToCart',
 	        value: function handleAddToCart(event) {
-	            var priceInfo = this.props.priceData;
+	            var priceInfo = this.props.priceData; // const priceInfo = localStorage.......
 	            var selectedDoc = JSON.parse(localStorage.selectedDocs);
 	            var btnId = event.target.id;
 	            var copyQty = _reactDom2.default.findDOMNode(this.refs[btnId]).value; //need to do some validation later
@@ -29481,6 +29476,7 @@
 	                    break;
 	            }
 	            var inputVal = _reactDom2.default.findDOMNode(this.refs[buttonId]);
+	
 	            var num = parseInt(inputVal.value);
 	            num += 1;
 	            inputVal.value = num; //to be optimized;
@@ -29537,7 +29533,7 @@
 	                                _reactBootstrap.ListGroupItem,
 	                                null,
 	                                _react2.default.createElement(
-	                                    'h4',
+	                                    'strong',
 	                                    null,
 	                                    '$',
 	                                    this.props.priceData.std
@@ -29603,7 +29599,7 @@
 	                                _reactBootstrap.ListGroupItem,
 	                                null,
 	                                _react2.default.createElement(
-	                                    'h4',
+	                                    'strong',
 	                                    null,
 	                                    '$',
 	                                    this.props.priceData.exp
@@ -29669,7 +29665,7 @@
 	                                _reactBootstrap.ListGroupItem,
 	                                null,
 	                                _react2.default.createElement(
-	                                    'h4',
+	                                    'strong',
 	                                    null,
 	                                    '$',
 	                                    this.props.priceData.urg
@@ -49664,7 +49660,6 @@
 	            } else {
 	                this.setState({ alert: false, buttonDisable: false });
 	            }
-	
 	            event.stopPropagation();
 	        }
 	    }, {
@@ -49910,8 +49905,7 @@
 	            cart: {
 	                items: [],
 	                totalPrice: 0
-	            },
-	            uploadFiles: []
+	            }
 	        };
 	        _this.handleFileChange = _this.handleFileChange.bind(_this);
 	        _this.handleSubmit = _this.handleSubmit.bind(_this);
@@ -49934,11 +49928,10 @@
 	        key: 'handleFileChange',
 	        value: function handleFileChange(item, event) {
 	            var fileName = item.doc;
+	            var file = {};
 	            var files = [];
+	
 	            files.push(event.target.files);
-	            this.setState({
-	                uploadFiles: files
-	            });
 	
 	            //
 	            //
@@ -49947,12 +49940,23 @@
 	    }, {
 	        key: 'handleSubmit',
 	        value: function handleSubmit(event) {
-	            var config = {
-	                headers: {
-	                    "Content-Type": "multipart/form-data"
-	                }
-	            };
-	            console.log(this.state.uploadFiles);
+	            var formData = _reactDom2.default.findDOMNode(this.refs.myForm);
+	            var upData = new FormData(formData);
+	
+	            _axios2.default.post('http://localhost/api/api/post/upload', upData).then(function (response) {
+	                console.log(response.data);
+	            }).catch(function (err) {
+	                console.log(err.message);
+	            });
+	
+	            this.state.cart.items.map(function (item, index) {
+	                console.log(upData.getAll(item.doc + '-docs[]'));
+	                upData.set(item.doc + '-docs[]', upData.getAll(item.doc + '-docs[]'));
+	            });
+	            console.log(upData.get('full-name'));
+	            //console.log(upData.getAll('doc[]'));
+	
+	
 	            event.preventDefault();
 	        }
 	    }, {
@@ -49960,7 +49964,6 @@
 	        value: function uploadInput() {
 	            var _this2 = this;
 	
-	            console.log(this.state);
 	            return this.state.cart.items.map(function (item, index) {
 	                return _react2.default.createElement(
 	                    'div',
@@ -49970,15 +49973,13 @@
 	                        null,
 	                        item.doc
 	                    ),
-	                    _react2.default.createElement('input', { className: 'file-input btn btn-info form-control', type: 'file', id: "item-" + index, name: 'docs[]',
-	                        multiple: true, onChange: function onChange(event) {
+	                    _react2.default.createElement('input', { className: 'file-input btn btn-info form-control', type: 'file', id: "item-" + index,
+	                        name: item.doc + '-docs[]', multiple: true, onChange: function onChange(event) {
 	                            return _this2.handleFileChange(item, event);
 	                        } })
 	                );
 	            });
 	        }
-	        // method="POST" action="http://localhost/api/api/post/upload" encType="multipart/form-data"
-	
 	    }, {
 	        key: 'render',
 	        value: function render() {
@@ -49992,7 +49993,7 @@
 	                ),
 	                _react2.default.createElement(
 	                    'form',
-	                    { onSubmit: this.handleSubmit, encType: 'multipart/form-data' },
+	                    { onSubmit: this.handleSubmit, encType: 'multipart/form-data', method: 'POST', ref: 'myForm', id: 'myForm', name: 'myForm' },
 	                    this.uploadInput(),
 	                    _react2.default.createElement(
 	                        'div',
@@ -50002,19 +50003,19 @@
 	                            null,
 	                            'Please enter your full name'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'text', ref: 'full-name', className: 'form-control' }),
+	                        _react2.default.createElement('input', { type: 'text', ref: 'full-name', name: 'full-name', className: 'form-control' }),
 	                        _react2.default.createElement(
 	                            'h5',
 	                            null,
 	                            'Please enter your post address'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'text', ref: 'post-address', className: 'form-control' }),
+	                        _react2.default.createElement('input', { type: 'text', ref: 'post-address', name: 'post-address', className: 'form-control' }),
 	                        _react2.default.createElement(
 	                            'h5',
 	                            null,
 	                            'Other comment for the services'
 	                        ),
-	                        _react2.default.createElement('textarea', { className: 'form-control', ref: 'comment', rows: '2', placeholder: 'Comments for these documents .e.g where are you going to use driver\'s licence' })
+	                        _react2.default.createElement('textarea', { className: 'form-control', ref: 'comment', name: 'comment', rows: '2', placeholder: 'Comments for these documents .e.g where are you going to use driver\'s licence' })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',

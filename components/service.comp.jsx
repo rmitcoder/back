@@ -65,10 +65,11 @@ class ServiceComponent extends React.Component{
         this.setState({
             selectedVal: cached
         });
+
     }
     handleRedir(event){
         let path = '';
-        let selected = this .state.selectedVal;
+        let selected = this.state.selectedVal;
         if(selected.document === 'Driver\'s Licence')
         {
             path = '/services/Driver\'s Licence Check';

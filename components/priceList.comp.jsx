@@ -46,7 +46,7 @@ class PriceList extends React.Component{
         return sum;
     }
     handleAddToCart(event){
-        const priceInfo = this.props.priceData;
+        const priceInfo = this.props.priceData;// const priceInfo = localStorage.......
         const selectedDoc = JSON.parse(localStorage.selectedDocs);
         let btnId = event.target.id;
         let copyQty = ReactDOM.findDOMNode(this.refs[btnId]).value;//need to do some validation later
@@ -121,6 +121,7 @@ class PriceList extends React.Component{
                 break;
         }
         let inputVal = ReactDOM.findDOMNode(this.refs[buttonId]);
+
         let num = parseInt(inputVal.value);
         num +=1;
         inputVal.value = num;//to be optimized;
@@ -164,7 +165,7 @@ class PriceList extends React.Component{
                 <div className="row col-md-9">
                     <Panel className="col-md-3" header="Standard" bsStyle="success" style={StyleObj.tab}>
                         <ListGroup fill>
-                            <ListGroupItem><h4 >${this.props.priceData.std}</h4></ListGroupItem>
+                            <ListGroupItem><strong >${this.props.priceData.std}</strong></ListGroupItem>
                             <ListGroupItem>3-5 business Day</ListGroupItem>
                             <ListGroupItem>with 1 hard copy</ListGroupItem>
                             <ListGroupItem >
@@ -185,7 +186,7 @@ class PriceList extends React.Component{
                     </Panel>
                     <Panel className="col-md-3" header="Express" bsStyle="success" style={StyleObj.tab}>
                         <ListGroup fill>
-                            <ListGroupItem><h4>${this.props.priceData.exp}</h4></ListGroupItem>
+                            <ListGroupItem><strong>${this.props.priceData.exp}</strong></ListGroupItem>
                             <ListGroupItem>In 3 business days   </ListGroupItem>
                             <ListGroupItem>with 1 hard copy</ListGroupItem>
                             <ListGroupItem>
@@ -205,7 +206,7 @@ class PriceList extends React.Component{
                     </Panel>
                     <Panel className="col-md-3" header="Urgent" bsStyle="success" style={StyleObj.tab}>
                         <ListGroup fill>
-                            <ListGroupItem><h4>${this.props.priceData.urg}</h4></ListGroupItem>
+                            <ListGroupItem><strong>${this.props.priceData.urg}</strong></ListGroupItem>
                             <ListGroupItem>Within ONE day</ListGroupItem>
                             <ListGroupItem>with 1 hard copy</ListGroupItem>
                             <ListGroupItem>
@@ -225,7 +226,7 @@ class PriceList extends React.Component{
                     </Panel>
                 </div>
                 <div className="col-md-3 pull-right" >
-                    <Cart panelStyle={StyleObj} cartData={this.state.currentCart} />
+                    <Cart  panelStyle={StyleObj} cartData={this.state.currentCart} />
                 </div>
             </div>
         )
