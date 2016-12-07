@@ -12,7 +12,8 @@ class DocUpload extends React.Component {
             cart: {
                 items:[],
                 totalPrice: 0
-            }
+            },
+            uploadFiles: []
         }
         this.handleFileChange = this.handleFileChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,20 +31,29 @@ class DocUpload extends React.Component {
     handleFileChange(item,event){
         let fileName = item.doc;
         let file = {};
-        let files = [];
+        let currentFileObject = this.state.uploadFiles;
+        file.fileList = event.target.files;
+        file.name = fileName;
+        currentFileObject.push(file);
+        this.setState({
+            uploadFiles: currentFileObject
+        })
 
-        files.push(event.target.files);
-
-       //
-        //
-        console.log("doc name is %s",fileName);
+        console.log(this.state.uploadFiles);
 
     }
    handleSubmit(event){
-    let formData = ReactDOM.findDOMNode(this.refs.myForm);
-    let upData = new FormData(formData);
-    
+       let formData = ReactDOM.findDOMNode(this.refs.myForm);
+       let upData = new FormData();
+       let updataArr = this.state.uploadFiles;
+       updataArr.map((fileObj) =>{
+           for(let i = 0; i<fileObj.fileList.length; i++){
+               let extension = fileObj.fileList.item(i).name.split('.')[1];
+               upData.append('files[]',fileObj.fileList.item(i),fileObj.name+'-'+i+'.'+extension);
+           }
 
+
+       });
 
 
     axios.post('http://localhost/api/api/post/upload',upData)
@@ -54,11 +64,11 @@ class DocUpload extends React.Component {
             console.log(err.message)
         });
 
-        this.state.cart.items.map((item,index) => {
-            console.log(upData.getAll(item.doc+'-docs[]'));
-            upData.set(item.doc+'-docs[]',upData.getAll(item.doc+'-docs[]'),)
-        });
-       console.log(upData.get('full-name'));
+        // this.state.cart.items.map((item,index) => {
+        //     console.log(upData.getAll(item.doc+'-docs[]'));
+        //     upData.set(item.doc+'-docs[]',upData.getAll(item.doc+'-docs[]'),)
+        // });
+
        //console.log(upData.getAll('doc[]'));
 
 
@@ -74,7 +84,7 @@ class DocUpload extends React.Component {
                         <div className="form-group" key={index}>
                             <h4>{item.doc}</h4>
                             <input className="file-input btn btn-info form-control" type="file" id={"item-"+index}
-                                 name={item.doc+'-docs[]'}  multiple onChange={(event) =>
+                                 name='doc[]'  multiple onChange={(event) =>
                                 this.handleFileChange(item, event)}/>
                         </div>
                 )

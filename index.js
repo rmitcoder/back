@@ -49905,7 +49905,8 @@
 	            cart: {
 	                items: [],
 	                totalPrice: 0
-	            }
+	            },
+	            uploadFiles: []
 	        };
 	        _this.handleFileChange = _this.handleFileChange.bind(_this);
 	        _this.handleSubmit = _this.handleSubmit.bind(_this);
@@ -49929,19 +49930,29 @@
 	        value: function handleFileChange(item, event) {
 	            var fileName = item.doc;
 	            var file = {};
-	            var files = [];
+	            var currentFileObject = this.state.uploadFiles;
+	            file.fileList = event.target.files;
+	            file.name = fileName;
+	            currentFileObject.push(file);
+	            this.setState({
+	                uploadFiles: currentFileObject
+	            });
 	
-	            files.push(event.target.files);
-	
-	            //
-	            //
-	            console.log("doc name is %s", fileName);
+	            console.log(this.state.uploadFiles);
 	        }
 	    }, {
 	        key: 'handleSubmit',
 	        value: function handleSubmit(event) {
 	            var formData = _reactDom2.default.findDOMNode(this.refs.myForm);
-	            var upData = new FormData(formData);
+	            //let upData = new FormData(formData);
+	            var upData = new FormData();
+	            var updataArr = this.state.uploadFiles;
+	            updataArr.map(function (fileObj) {
+	                for (var i = 0; i < fileObj.fileList.length; i++) {
+	                    var extension = fileObj.fileList.item(i).name.split('.')[1];
+	                    upData.append('files[]', fileObj.fileList.item(i), fileObj.name + '-' + i + '.' + extension);
+	                }
+	            });
 	
 	            _axios2.default.post('http://localhost/api/api/post/upload', upData).then(function (response) {
 	                console.log(response.data);
@@ -49949,11 +49960,11 @@
 	                console.log(err.message);
 	            });
 	
-	            this.state.cart.items.map(function (item, index) {
-	                console.log(upData.getAll(item.doc + '-docs[]'));
-	                upData.set(item.doc + '-docs[]', upData.getAll(item.doc + '-docs[]'));
-	            });
-	            console.log(upData.get('full-name'));
+	            // this.state.cart.items.map((item,index) => {
+	            //     console.log(upData.getAll(item.doc+'-docs[]'));
+	            //     upData.set(item.doc+'-docs[]',upData.getAll(item.doc+'-docs[]'),)
+	            // });
+	
 	            //console.log(upData.getAll('doc[]'));
 	
 	
@@ -49974,7 +49985,7 @@
 	                        item.doc
 	                    ),
 	                    _react2.default.createElement('input', { className: 'file-input btn btn-info form-control', type: 'file', id: "item-" + index,
-	                        name: item.doc + '-docs[]', multiple: true, onChange: function onChange(event) {
+	                        name: 'doc[]', multiple: true, onChange: function onChange(event) {
 	                            return _this2.handleFileChange(item, event);
 	                        } })
 	                );
