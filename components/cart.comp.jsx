@@ -48,17 +48,7 @@ class Cart extends React.Component{
         // }
         hashHistory.push('/upload');
     }
-    printOrder(cart){
-        let total = parseInt(cart.totalPrice);
-        let itemNum = cart.items.length;
-        let items = cart.items;
-        items.map((item,index) => {
-            console.log('your order:'+itemNum+' services this is '+(parseInt(index)+1)+' document' +
-                ', document name is:'+item.doc+' translate '+item.dir+' '+ item.lang+' the ' +
-                'qty of hard copy is:'+item.extraCop);
-        });
-        console.log('total price is '+total);
-    }
+
     remove(item){
         let newState = this.state.cart;
         const deletedItemPrice = item.subTotal;
@@ -132,8 +122,9 @@ class Cart extends React.Component{
                 <tr key={item.id} id={item.id}>
                     <td>{item.id}</td>
                     <td>{item.doc}</td>
-                    <td>{item.dir}</td>
-                    <td>{item.lang}</td>
+                    <td>{item.sourceLanguage}</td>
+                    <td>{item.targetLanguage}</td>
+                    <td>{item.speed}</td>
                     <td>
                     <InputGroup bsSize="small">
                         <InputGroup.Button>
@@ -145,6 +136,7 @@ class Cart extends React.Component{
                         </InputGroup.Button>
                     </InputGroup>
                     </td>
+
                     <td>${item.subTotal}</td>
                     <td><Button bsStyle="danger" onClick={this.remove.bind(this,item)} id={'btn-'+item.id}>remove</Button></td>
                 </tr>
@@ -170,8 +162,9 @@ class Cart extends React.Component{
                             <tr>
                                 <th>Id</th>
                                 <th>Document</th>
-                                <th>Direction</th>
-                                <th>Language</th>
+                                <th>Translate From</th>
+                                <th>Translate Into</th>
+                                <th>Speed</th>
                                 <th>Extra Copy</th>
                                 <th>Sub-Total</th>
                                 <th>Action</th>

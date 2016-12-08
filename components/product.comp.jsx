@@ -22,7 +22,16 @@ class GetPrice extends React.Component{
                 'Content-Type': 'application/json'
             }
         };
-        axios.get('http://localhost/api/api/get/price/'+selectedProduct.document+'/'+selectedProduct.language,config)
+        let language = ''
+        if(selectedProduct.sourceLanguage === 'English'){
+            language = selectedProduct.targetLanguage;
+        }else{
+            language = selectedProduct.sourceLanguage;
+        }/*
+            just 1 language is enough to get the data except English
+        */
+
+        axios.get('http://localhost/api/api/get/price/'+selectedProduct.document+'/'+language,config)
             .then(function(response){
                 _self.setState({
                     currentPrice: response.data
@@ -34,7 +43,7 @@ class GetPrice extends React.Component{
 
 
     render() {
-            //console.log(localStorage);
+
                 return(
 
                     <div className="jumbotron text-center">

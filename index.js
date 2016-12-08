@@ -27456,14 +27456,17 @@
 	            documents: [],
 	            languages: [],
 	            selectedVal: {
-	                document: '',
-	                direction: '',
-	                language: ''
-	            }
+	                document: 'selected',
+	                sourceLanguage: 'selected',
+	                targetLanguage: 'selected'
+	            },
+	            srcEnglishOnly: false,
+	            tarEnglishOnly: false
 	
 	        };
 	        _this.handleRedir = _this.handleRedir.bind(_this);
 	        _this.handleChange = _this.handleChange.bind(_this);
+	        _this.test = _this.test.bind(_this); // for test state  please delete after complete the function of this component
 	        return _this;
 	    }
 	
@@ -27489,31 +27492,79 @@
 	        value: function handleChange(event) {
 	            var selectId = event.target.id;
 	            var selectValue = event.target.value;
+	            var cached = this.state.selectedVal;
+	            var displayState = {
+	                srcEnglishOnly: this.state.srcEnglishOnly,
+	                tarEnglishOnly: this.state.tarEnglishOnly
+	            };
+	
 	            if (selectValue === 'selected') {
 	                return;
 	            }
-	            var cached = this.state.selectedVal;
-	
+	            if (selectId === 'source-language' && selectValue != 'English' && !displayState.tarEnglishOnly) {
+	                displayState.tarEnglishOnly = true;
+	            } else if (selectId === 'source-language' && selectValue === 'English' && displayState.tarEnglishOnly) {
+	                displayState.tarEnglishOnly = false;
+	            }
+	            if (selectId === 'target-language' && selectValue != 'English' && !displayState.srcEnglishOnly) {
+	                displayState.srcEnglishOnly = true;
+	            } else if (selectId === 'target-language' && selectValue === 'English' && displayState.srcEnglishOnly) {
+	                displayState.srcEnglishOnly = false;
+	            }
 	            switch (selectId) {
 	                case 'document':
 	                    cached.document = selectValue;
 	                    if (selectValue === 'Family Register') {
-	                        cached.language = '';
+	                        cached.sourceLanguage = 'selected';
+	                        cached.targetLanguage = 'selected';
 	                    }
 	                    break;
-	                case 'direction':
-	                    cached.direction = selectValue;
+	                case 'source-language':
+	                    if (selectValue === cached.targetLanguage) {
+	                        alert("cannot select same language as source and target language!!");
+	                        this.setState({
+	                            selectedVal: {
+	                                document: cached.document,
+	                                sourceLanguage: 'selected',
+	                                targetLanguage: cached.targetLanguage
+	                            }
+	                        });
+	                        return;
+	                    }
+	                    cached.sourceLanguage = selectValue;
+	                    console.log("src= %s", selectValue);
 	                    break;
-	                case 'language':
-	                    cached.language = selectValue;
+	                case 'target-language':
+	                    if (selectValue === cached.sourceLanguage) {
+	                        alert("cannot select same language as source and target language!!");
+	
+	                        this.setState({
+	                            selectedVal: {
+	                                document: cached.document,
+	                                sourceLanguage: cached.sourceLanguage,
+	                                targetLanguage: 'selected'
+	                            }
+	                        });
+	
+	                        return;
+	                    }
+	                    cached.targetLanguage = selectValue;
+	                    console.log("tar= %s", selectValue);
 	                    break;
 	                default:
 	                    null;
 	                    break;
 	            }
 	            this.setState({
-	                selectedVal: cached
+	                selectedVal: cached,
+	                srcEnglishOnly: displayState.srcEnglishOnly,
+	                tarEnglishOnly: displayState.tarEnglishOnly
 	            });
+	        }
+	    }, {
+	        key: 'test',
+	        value: function test() {
+	            console.log(this.state.selectedVal);
 	        }
 	    }, {
 	        key: 'handleRedir',
@@ -27526,7 +27577,7 @@
 	                path = '/services/' + selected.document;
 	            }
 	
-	            if (selected.doc === '' || selected.dir === '' || selected.language === '') {
+	            if (selected.doc === 'selected' || selected.sourceLanguage === 'selected' || selected.targetLanguage === 'selected') {
 	                alert("Please complete the information ");
 	                return;
 	            }
@@ -27553,30 +27604,123 @@
 	        }
 	    }, {
 	        key: 'lanOption',
-	        value: function lanOption(document) {
-	            if (document === 'Family Register') {
+	        value: function lanOption() {
+	            return this.state.languages.map(function (lan, index) {
 	                return _react2.default.createElement(
 	                    'option',
-	                    { value: 'Japanese' },
-	                    'Japanese'
+	                    { value: lan.language, key: index },
+	                    lan.language
+	                );
+	            });
+	        }
+	    }, {
+	        key: 'srcLanguageSelect',
+	        value: function srcLanguageSelect(document) {
+	            if (document === 'Family Register') {
+	                return _react2.default.createElement(
+	                    'div',
+	                    { className: 'form-group' },
+	                    _react2.default.createElement(
+	                        'select',
+	                        { name: 'source-language', id: 'source-language', className: 'form-control', onChange: this.handleChange, defaultValue: this.state.selectedVal.sourceLanguage },
+	                        _react2.default.createElement(
+	                            'option',
+	                            { value: 'selected' },
+	                            'Source Language '
+	                        ),
+	                        _react2.default.createElement(
+	                            'option',
+	                            { value: 'Japanese' },
+	                            'Japanese'
+	                        ),
+	                        _react2.default.createElement(
+	                            'option',
+	                            { value: 'English' },
+	                            'English'
+	                        )
+	                    )
 	                );
 	            } else {
-	                return this.state.languages.map(function (lan, index) {
-	                    return _react2.default.createElement(
-	                        'option',
-	                        { value: lan.language, key: index },
-	                        lan.language
-	                    );
-	                });
+	                return _react2.default.createElement(
+	                    'div',
+	                    { className: 'form-group' },
+	                    _react2.default.createElement(
+	                        'select',
+	                        { name: 'source-language', id: 'source-language', className: 'form-control', onChange: this.handleChange, defaultValue: this.state.selectedVal.sourceLanguage },
+	                        _react2.default.createElement(
+	                            'option',
+	                            { value: 'selected' },
+	                            'Source Language '
+	                        ),
+	                        this.state.srcEnglishOnly ? _react2.default.createElement(
+	                            'option',
+	                            { value: 'English' },
+	                            'English'
+	                        ) : this.lanOption()
+	                    )
+	                );
+	            }
+	        } // source
+	
+	    }, {
+	        key: 'tarLanguageSelect',
+	        value: function tarLanguageSelect(document) {
+	            if (document === 'Family Register') {
+	                return _react2.default.createElement(
+	                    'div',
+	                    { className: 'form-group' },
+	                    _react2.default.createElement(
+	                        'select',
+	                        { name: 'target-language', id: 'target-language', className: 'form-control', onChange: this.handleChange, defaultValue: this.state.selectedVal.targetLanguage },
+	                        _react2.default.createElement(
+	                            'option',
+	                            { value: 'selected' },
+	                            'Target Language '
+	                        ),
+	                        _react2.default.createElement(
+	                            'option',
+	                            { value: 'Japanese' },
+	                            'Japanese'
+	                        ),
+	                        _react2.default.createElement(
+	                            'option',
+	                            { value: 'English' },
+	                            'English'
+	                        )
+	                    )
+	                );
+	            } else {
+	                return _react2.default.createElement(
+	                    'div',
+	                    { className: 'form-group' },
+	                    _react2.default.createElement(
+	                        'select',
+	                        { name: 'target-language', id: 'target-language', className: 'form-control', onChange: this.handleChange, defaultValue: this.state.selectedVal.targetLanguage },
+	                        _react2.default.createElement(
+	                            'option',
+	                            { value: 'selected' },
+	                            'Target Language '
+	                        ),
+	                        this.state.tarEnglishOnly ? _react2.default.createElement(
+	                            'option',
+	                            { value: 'English' },
+	                            'English'
+	                        ) : this.lanOption()
+	                    )
+	                );
 	            }
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	
 	            return _react2.default.createElement(
 	                'div',
 	                null,
+	                _react2.default.createElement(
+	                    'button',
+	                    { onClick: this.test },
+	                    'Display state'
+	                ),
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: ' jumbotron text-center' },
@@ -27593,46 +27737,23 @@
 	                            { className: 'form-group ' },
 	                            _react2.default.createElement(
 	                                'select',
-	                                { name: 'document', id: 'document', className: 'form-control', onChange: this.handleChange, defaultValue: 'selected' },
+	                                { name: 'document', id: 'document', className: 'form-control', onChange: this.handleChange, defaultValue: this.state.selectedVal.document },
 	                                _react2.default.createElement(
 	                                    'option',
 	                                    { value: 'selected' },
 	                                    'Select a Document'
 	                                ),
 	                                this.docOption()
-	                            ),
-	                            _react2.default.createElement(
-	                                'select',
-	                                { name: 'direction', id: 'direction', className: 'form-control', onChange: this.handleChange, defaultValue: 'selected' },
-	                                _react2.default.createElement(
-	                                    'option',
-	                                    { value: 'selected' },
-	                                    'Select Direction '
-	                                ),
-	                                _react2.default.createElement(
-	                                    'option',
-	                                    { value: 'From' },
-	                                    'Translate From'
-	                                ),
-	                                _react2.default.createElement(
-	                                    'option',
-	                                    { value: 'Into' },
-	                                    'Translate Into'
-	                                )
-	                            ),
-	                            _react2.default.createElement(
-	                                'select',
-	                                { name: 'language', id: 'language', className: 'form-control', onChange: this.handleChange, defaultValue: 'selected' },
-	                                _react2.default.createElement(
-	                                    'option',
-	                                    { value: 'selected' },
-	                                    'Select a Language'
-	                                ),
-	                                this.lanOption(this.state.selectedVal.document)
-	                            ),
+	                            )
+	                        ),
+	                        this.srcLanguageSelect(this.state.selectedVal.document),
+	                        this.tarLanguageSelect(this.state.selectedVal.document),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'form-group' },
 	                            _react2.default.createElement(
 	                                'button',
-	                                { className: 'btn btn-primary', onClick: this.handleRedir },
+	                                { className: 'btn btn-primary form-control', onClick: this.handleRedir },
 	                                'Quote Now'
 	                            )
 	                        )
@@ -29277,7 +29398,16 @@
 	                    'Content-Type': 'application/json'
 	                }
 	            };
-	            _axios2.default.get('http://localhost/api/api/get/price/' + selectedProduct.document + '/' + selectedProduct.language, config).then(function (response) {
+	            var language = '';
+	            if (selectedProduct.sourceLanguage === 'English') {
+	                language = selectedProduct.targetLanguage;
+	            } else {
+	                language = selectedProduct.sourceLanguage;
+	            } /*
+	                 just 1 language is enough to get the data except English
+	              */
+	
+	            _axios2.default.get('http://localhost/api/api/get/price/' + selectedProduct.document + '/' + language, config).then(function (response) {
 	                _self.setState({
 	                    currentPrice: response.data
 	                });
@@ -29286,7 +29416,7 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            //console.log(localStorage);
+	
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'jumbotron text-center' },
@@ -29369,8 +29499,8 @@
 	        }
 	
 	        _this.handleAddToCart = _this.handleAddToCart.bind(_this);
-	        _this.add = _this.add.bind(_this);
-	        _this.substract = _this.substract.bind(_this);
+	        // this.add = this.add.bind(this);
+	        // this.substract = this.substract.bind(this); these two functions combined into edit()
 	        _this.edit = _this.edit.bind(_this);
 	        return _this;
 	    }
@@ -29410,9 +29540,24 @@
 	            } else {
 	                existCart = [];
 	            }
+	            switch (btnId) {
+	                case 'std':
+	                    item.speed = "regular";
+	                    break;
+	                case 'exp':
+	                    item.speed = 'express';
+	                    break;
+	                case 'urg':
+	                    item.speed = 'urgent';
+	                    break;
+	                default:
+	                    null;
+	                    break;
+	
+	            }
 	            item.doc = selectedDoc.document;
-	            item.dir = selectedDoc.direction;
-	            item.lang = selectedDoc.language;
+	            item.sourceLanguage = selectedDoc.sourceLanguage;
+	            item.targetLanguage = selectedDoc.targetLanguage;
 	            item.extraCop = copyQty;
 	            item.subTotal = basicPrice + 10 * item.extraCop; //Assume we charge $10 for each extra hard copy.
 	            existCart.push(item);
@@ -29456,32 +29601,32 @@
 	        value: function componentWillUnmount() {
 	            this.state.buttonDisable ? false : null;
 	        }
-	    }, {
-	        key: 'add',
-	        value: function add(event) {
-	            event.stopPropagation();
-	            var btnId = event.target.id;
-	            var buttonId = '';
-	            switch (btnId) {
-	                case 'stdAdd':
-	                    buttonId = 'std';
-	                    break;
-	                case 'expAdd':
-	                    buttonId = 'exp';
-	                    break;
-	                case 'urgAdd':
-	                    buttonId = 'urg';
-	                    break;
-	                default:
-	                    null;
-	                    break;
-	            }
-	            var inputVal = _reactDom2.default.findDOMNode(this.refs[buttonId]);
+	        // add(event){
+	        //     event.stopPropagation();
+	        //     let btnId = event.target.id;
+	        //     let buttonId = '';
+	        //     switch (btnId){
+	        //         case 'stdAdd':
+	        //             buttonId = 'std';
+	        //             break;
+	        //         case 'expAdd':
+	        //             buttonId = 'exp';
+	        //             break;
+	        //         case 'urgAdd':
+	        //             buttonId = 'urg';
+	        //             break;
+	        //         default:
+	        //             null;
+	        //             break;
+	        //     }
+	        //     let inputVal = ReactDOM.findDOMNode(this.refs[buttonId]);
+	        //
+	        //     let num = parseInt(inputVal.value);
+	        //     num +=1;
+	        //     inputVal.value = num;//to be optimized;
+	        //
+	        // }
 	
-	            var num = parseInt(inputVal.value);
-	            num += 1;
-	            inputVal.value = num; //to be optimized;
-	        }
 	    }, {
 	        key: 'edit',
 	        value: function edit(event) {
@@ -29502,35 +29647,34 @@
 	            }
 	            extraCopyInput.value = hardCopyQty;
 	        }
-	    }, {
-	        key: 'substract',
-	        value: function substract(event) {
-	            event.stopPropagation();
-	            var btnId = event.target.id;
+	        // substract(event){
+	        //     event.stopPropagation();
+	        //     let btnId = event.target.id;
+	        //
+	        //     let buttonId = '';
+	        //     switch (btnId){
+	        //         case 'stdSub':
+	        //             buttonId = 'std';
+	        //             break;
+	        //         case 'expSub':
+	        //             buttonId = 'exp';
+	        //             break;
+	        //         case 'urgSub':
+	        //             buttonId = 'urg';
+	        //             break;
+	        //         default:
+	        //             null;
+	        //             break;
+	        //     }
+	        //     let inputVal = ReactDOM.findDOMNode(this.refs[buttonId]);
+	        //     let num = parseInt(inputVal.value);
+	        //     num -=1;
+	        //     if(num < 0){
+	        //         return;
+	        //     }
+	        //     inputVal.value = num;//to be optimized;
+	        // }
 	
-	            var buttonId = '';
-	            switch (btnId) {
-	                case 'stdSub':
-	                    buttonId = 'std';
-	                    break;
-	                case 'expSub':
-	                    buttonId = 'exp';
-	                    break;
-	                case 'urgSub':
-	                    buttonId = 'urg';
-	                    break;
-	                default:
-	                    null;
-	                    break;
-	            }
-	            var inputVal = _reactDom2.default.findDOMNode(this.refs[buttonId]);
-	            var num = parseInt(inputVal.value);
-	            num -= 1;
-	            if (num < 0) {
-	                return;
-	            }
-	            inputVal.value = num; //to be optimized;
-	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
@@ -49298,17 +49442,6 @@
 	            _reactRouter.hashHistory.push('/upload');
 	        }
 	    }, {
-	        key: 'printOrder',
-	        value: function printOrder(cart) {
-	            var total = parseInt(cart.totalPrice);
-	            var itemNum = cart.items.length;
-	            var items = cart.items;
-	            items.map(function (item, index) {
-	                console.log('your order:' + itemNum + ' services this is ' + (parseInt(index) + 1) + ' document' + ', document name is:' + item.doc + ' translate ' + item.dir + ' ' + item.lang + ' the ' + 'qty of hard copy is:' + item.extraCop);
-	            });
-	            console.log('total price is ' + total);
-	        }
-	    }, {
 	        key: 'remove',
 	        value: function remove(item) {
 	            var newState = this.state.cart;
@@ -49399,12 +49532,17 @@
 	                    _react2.default.createElement(
 	                        'td',
 	                        null,
-	                        item.dir
+	                        item.sourceLanguage
 	                    ),
 	                    _react2.default.createElement(
 	                        'td',
 	                        null,
-	                        item.lang
+	                        item.targetLanguage
+	                    ),
+	                    _react2.default.createElement(
+	                        'td',
+	                        null,
+	                        item.speed
 	                    ),
 	                    _react2.default.createElement(
 	                        'td',
@@ -49521,12 +49659,17 @@
 	                                    _react2.default.createElement(
 	                                        'th',
 	                                        null,
-	                                        'Direction'
+	                                        'Translate From'
 	                                    ),
 	                                    _react2.default.createElement(
 	                                        'th',
 	                                        null,
-	                                        'Language'
+	                                        'Translate Into'
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'th',
+	                                        null,
+	                                        'Speed'
 	                                    ),
 	                                    _react2.default.createElement(
 	                                        'th',

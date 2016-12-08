@@ -60,9 +60,25 @@ class PriceList extends React.Component{
         }else{
             existCart = [];
         }
+        switch (btnId){
+            case 'std':
+                item.speed = "regular";
+                break;
+            case 'exp':
+                item.speed = 'express';
+                break;
+            case 'urg':
+                item.speed = 'urgent';
+                break;
+            default:
+                null;
+                break;
+
+
+        }
         item.doc = selectedDoc.document;
-        item.dir = selectedDoc.direction;
-        item.lang = selectedDoc.language;
+        item.sourceLanguage = selectedDoc.sourceLanguage;
+        item.targetLanguage = selectedDoc.targetLanguage;
         item.extraCop = copyQty;
         item.subTotal = basicPrice + 10 * item.extraCop; //Assume we charge $10 for each extra hard copy.
         existCart.push(item);

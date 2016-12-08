@@ -8,14 +8,17 @@ class ServiceComponent extends React.Component{
             documents: [],
             languages: [],
             selectedVal: {
-                document: '',
-                direction: '',
-                language: ''
-            }
+                document: 'selected',
+                sourceLanguage: 'selected',
+                targetLanguage: 'selected'
+            },
+            srcEnglishOnly: false,
+            tarEnglishOnly: false
 
         };
         this.handleRedir = this.handleRedir.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.test = this.test.bind(this); // for test state  please delete after complete the function of this component
     };
 
     componentDidMount(){
@@ -36,36 +39,84 @@ class ServiceComponent extends React.Component{
             })
         }));
     }
-
     handleChange(event){
         let selectId = event.target.id;
         let selectValue = event.target.value;
+        let cached = this.state.selectedVal;
+        let displayState = {
+            srcEnglishOnly: this.state.srcEnglishOnly,
+            tarEnglishOnly: this.state.tarEnglishOnly
+        }
+
         if(selectValue === 'selected'){
             return;
         }
-        let cached = this.state.selectedVal;
-
+        if(selectId === 'source-language' && selectValue != 'English' && !displayState.tarEnglishOnly){
+            displayState.tarEnglishOnly = true;
+        }else if(selectId === 'source-language' && selectValue === 'English' && displayState.tarEnglishOnly){
+            displayState.tarEnglishOnly =false;
+        }
+        if(selectId === 'target-language' && selectValue != 'English' && !displayState.srcEnglishOnly ){
+            displayState.srcEnglishOnly = true;
+        }else if(selectId === 'target-language' && selectValue === 'English' && displayState.srcEnglishOnly){
+            displayState.srcEnglishOnly = false;
+        }
         switch (selectId){
             case 'document':
                 cached.document = selectValue;
                 if(selectValue === 'Family Register'){
-                    cached.language = '';
+                    cached.sourceLanguage = 'selected';
+                    cached.targetLanguage = 'selected'
                 }
                 break;
-            case 'direction':
-                cached.direction = selectValue;
+            case 'source-language':
+                if(selectValue === cached.targetLanguage){
+                    alert("cannot select same language as source and target language!!");
+                    this.setState({
+                        selectedVal:{
+                            document: cached.document,
+                            sourceLanguage: 'selected',
+                            targetLanguage:cached.targetLanguage
+                        }
+                    });
+                    return;
+                }
+                cached.sourceLanguage = selectValue;
+                console.log("src= %s",selectValue)
                 break;
-            case 'language':
-                cached.language = selectValue;
+            case 'target-language':
+                if(selectValue === cached.sourceLanguage){
+                    alert("cannot select same language as source and target language!!");
+
+                    this.setState({
+                        selectedVal:{
+                            document: cached.document,
+                            sourceLanguage: cached.sourceLanguage,
+                            targetLanguage: 'selected'
+                        }
+                    });
+
+                    return;
+                }
+                cached.targetLanguage = selectValue;
+                console.log("tar= %s",selectValue)
                 break;
             default :
                 null;
                 break;
         }
         this.setState({
-            selectedVal: cached
+            selectedVal: cached,
+            srcEnglishOnly: displayState.srcEnglishOnly,
+            tarEnglishOnly: displayState.tarEnglishOnly
         });
 
+
+
+
+    }
+    test(){
+        console.log(this.state.selectedVal);
     }
     handleRedir(event){
         let path = '';
@@ -78,7 +129,7 @@ class ServiceComponent extends React.Component{
             path = '/services/'+selected.document;
         }
 
-        if(selected.doc === '' || selected.dir === '' || selected.language === '' ){
+        if(selected.doc === 'selected' || selected.sourceLanguage === 'selected' || selected.targetLanguage === 'selected' ){
             alert( "Please complete the information ");
             return;
         }
@@ -102,12 +153,7 @@ class ServiceComponent extends React.Component{
             })
         );
     }
-    lanOption(document){
-        if(document === 'Family Register'){
-            return(
-                <option value='Japanese' >Japanese</option>
-            );
-        }else{
+    lanOption(){
             return (
                 this.state.languages.map((lan,index) => {
                     return(
@@ -115,31 +161,82 @@ class ServiceComponent extends React.Component{
                     );
                 })
             );
+    }
+    srcLanguageSelect(document){
+        if(document === 'Family Register' ) {
+            return (
+                <div className="form-group">
+                    <select name="source-language" id="source-language" className="form-control" onChange={this.handleChange} defaultValue={this.state.selectedVal.sourceLanguage} >
+                        <option value="selected">Source Language </option>
+                        <option value="Japanese">Japanese</option>
+                        <option value="English">English</option>
+                    </select>
+                </div>
+            );
+        }else{
+            return(
+                <div className="form-group">
+                    <select name="source-language" id="source-language" className="form-control" onChange={this.handleChange} defaultValue={this.state.selectedVal.sourceLanguage} >
+                        <option value="selected">Source Language </option>
+                        {(this.state.srcEnglishOnly)?<option value="English">English</option>:this.lanOption()}
+                    </select>
+                </div>
+            )
+        }
+
+    }// source
+    tarLanguageSelect(document){
+        if(document === 'Family Register' ) {
+            return (
+                <div className="form-group">
+                    <select name="target-language" id="target-language" className="form-control" onChange={this.handleChange} defaultValue={this.state.selectedVal.targetLanguage} >
+                        <option value="selected">Target Language </option>
+                        <option value="Japanese">Japanese</option>
+                        <option value="English">English</option>
+                    </select>
+                </div>
+            );
+        }else{
+            return(
+                <div className="form-group">
+                    <select name="target-language" id="target-language" className="form-control" onChange={this.handleChange} defaultValue={this.state.selectedVal.targetLanguage} >
+                        <option value="selected">Target Language </option>
+                        {(this.state.tarEnglishOnly)?<option value="English">English</option>:this.lanOption()}
+                    </select>
+                </div>
+            )
         }
 
     }
     render(){
-
         return(
             <div>
+                <button onClick={this.test}>Display state</button>
                 <div className=" jumbotron text-center">
                     <h1>Choose Your Service</h1>
                     <div className="form-inline" >
                         <div className="form-group " >
-                            <select name="document" id="document" className="form-control" onChange={this.handleChange} defaultValue="selected" >
+                            <select name="document" id="document" className="form-control" onChange={this.handleChange} defaultValue={this.state.selectedVal.document} >
                                 <option value="selected">Select a Document</option>
                                 {this.docOption()}
                             </select>
-                            <select name="direction" id="direction" className="form-control" onChange={this.handleChange} defaultValue="selected" >
-                                <option value="selected">Select Direction </option>
-                                <option value="From">Translate From</option>
-                                <option value="Into">Translate Into</option>
-                            </select>
-                            <select name="language" id="language" className="form-control" onChange={this.handleChange} defaultValue="selected">
-                                <option value="selected">Select a Language</option>
-                                {this.lanOption(this.state.selectedVal.document)}
-                            </select>
-                            <button className="btn btn-primary" onClick={this.handleRedir}>Quote Now</button>
+                        </div>
+                        {/*<div className="form-group">*/}
+                            {/*<select name="source-language" id="source-language" className="form-control" onChange={this.handleChange} defaultValue="selected" >*/}
+                                {/*<option value="selected">Source Language </option>*/}
+                                {/*{(this.state.srcEnglishOnly)?<option value="English">English</option>:this.lanOption(this.state.selectedVal.document)}*/}
+                            {/*</select>*/}
+                        {/*</div>*/}
+                        {/*<div className="form-group">*/}
+                            {/*<select name="target-language" id="target-language" className="form-control" onChange={this.handleChange} defaultValue="selected">*/}
+                                {/*<option value="selected">Target Language</option>*/}
+                                {/*{(this.state.tarEnglishOnly)?<option value="English">English</option>:this.lanOption(this.state.selectedVal.document)}*/}
+                            {/*</select>*/}
+                        {/*</div>*/}
+                        {this.srcLanguageSelect(this.state.selectedVal.document)}
+                        {this.tarLanguageSelect(this.state.selectedVal.document)}
+                        <div className="form-group">
+                            <button className="btn btn-primary form-control"  onClick={this.handleRedir}>Quote Now</button>
                         </div>
                     </div>
                 </div>
